@@ -56,3 +56,27 @@ def mutation(cluster, array, n):
     x = np.array(x).tolist()
 
     return x, y
+
+
+
+# 3D Scatter Plot
+from matplotlib import pyplot
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = pyplot.figure()
+ax = Axes3D(fig)
+
+# Plotting Weight Vectors
+xdata = [c_1[0], c_2[0], c_3[0], c_4[0], c_5[0], c_6[0], c_7[0], c_8[0], c_9[0]]
+ydata = [c_1[1], c_2[1], c_3[1], c_4[1], c_5[1], c_6[1], c_7[1], c_8[1], c_9[1]]
+zdata = [c_1[2], c_2[2], c_3[2], c_4[2], c_5[2], c_6[2], c_7[2], c_8[2], c_9[2]]
+
+# Axis Labels
+ax.set_xlabel('X-axis')
+ax.set_ylabel('Y-axis')
+ax.set_zlabel('Z-axis')
+
+# Make Plot
+ax.scatter(xdata, ydata, zdata)
+pyplot.show()
+

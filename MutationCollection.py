@@ -72,16 +72,17 @@ def plot(cluster, array, k):
     z = list()
     m = refined_mutation_collection(cluster, array, k)
     for i in range(len(refined_mutation_collection(cluster, array, k))):
-        x.append(m[i][0])
-        y.append(m[i][1])
-        z.append(m[i][2])
+        if m[i][0] <= 20:
+            x.append(m[i][0])
+            y.append(m[i][1])
+            z.append(m[i][2])
+    print(m)
+    print(len(m))
     return [x, y, z]
 
 
-# Make Plot (some examples
-r = refined_mutation_collection(C, A, 6)
-print(r)
-print(len(r))
-p = plot(C, A, 6)
+# Make Plot (set k to desired distance)
+k = 6
+p = plot(C, A, k)
 ax_1.scatter(p[0], p[1], p[2])
 pyplot.show()

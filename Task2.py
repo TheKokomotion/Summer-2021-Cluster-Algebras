@@ -1,5 +1,6 @@
 import numpy as np
 from math import comb
+import scipy.linalg as la
 
 
 # Random diagonal matrix with distinct eigenvalues
@@ -45,8 +46,9 @@ def tp_test(matrix):
 # Note: returns -1 if TP
 
 
-# TP generator
+# TP generator - unfortunately the way we're generating matrices, I don't think this will ever find a TP matrix
 def tp_matrix(size):
+    n = 0
     check = True
     while check:
         a = matrix_a(size)
@@ -54,8 +56,13 @@ def tp_matrix(size):
         c_ = np.linalg.inv(c)
         cac_ = np.matmul(c, a, c_)
         if tp_test(cac_) == -1:
+            n = n + 1
+            print(n)
             return cac_
         else:
+            # This way tells how many candidates were checked
+            n = n + 1
+            # This way gives some info on how "close" each candidate was to being TNN
             print(tp_test(cac_))
 
 
@@ -88,7 +95,6 @@ def tnn_test(matrix):
                                 c = c + 1
     # Output
     if c == comb(2 * len(matrix), len(matrix)) - 1:
-        print(c)
         return -1
     else:
         return c
@@ -97,6 +103,7 @@ def tnn_test(matrix):
 
 # TNN generator
 def tnn_matrix(size):
+    n = 0
     check = True
     while check:
         a = matrix_a(size)
@@ -104,10 +111,27 @@ def tnn_matrix(size):
         c_ = np.linalg.inv(c)
         cac_ = np.matmul(c, a, c_)
         if tnn_test(cac_) == -1:
+            n = n + 1
+            print(n)
             return cac_
         else:
-            print(tp_test(cac_))
+            # This way tells how many candidates were checked
+            n = n + 1
+            # This way gives some info on how "close" each candidate was to being TNN
+            # print(tnn_test(cac_))
+
+
+# LDU
+def ldu(matrix):
+    x = la.lu(matrix)[1]
+    u = la.lu(matrix)[2]
+    d = np.diag(np.diag(u))
+    u /= np.diag(u)[:, None]
+    return x, d, u
 
 
 k = 3
-print(tnn_matrix(k))
+A = tnn_matrix(k)
+print(A)
+print(la.lu(A))
+print(ldu(A))

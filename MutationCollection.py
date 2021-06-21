@@ -71,7 +71,7 @@ def plot(cluster, array, k):
     y = list()
     z = list()
     m = refined_mutation_collection(cluster, array, k)
-    for i in range(len(refined_mutation_collection(cluster, array, k))):
+    for i in range(len(m)):
         if m[i][0] <= 20:
             x.append(m[i][0])
             y.append(m[i][1])

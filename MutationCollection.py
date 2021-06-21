@@ -82,7 +82,7 @@ def plot(cluster, array, k):
 
 
 # Make Plot (set k to desired distance)
-k = 6
+k = 8
 p = plot(C, A, k)
 ax_1.scatter(p[0], p[1], p[2])
 pyplot.show()

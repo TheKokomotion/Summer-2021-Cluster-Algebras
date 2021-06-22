@@ -2,6 +2,7 @@ import numpy as np
 from math import comb
 import scipy.linalg as la
 import random
+from math import log10
 
 
 # Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
@@ -23,7 +24,8 @@ def sample_floats(low, high, k=1):
 # Random diagonal matrix with distinct eigenvalues
 def matrix_a(size):
     a = np.zeros((size, size))
-    b = sample_floats(0, 101, size)
+    # It seems that keeping the upper limit small helps the computer run through computations faster
+    b = sample_floats(0, 10, size)
     for i in range(size):
         a[i][i] = b[i]
     return a
@@ -71,7 +73,7 @@ def tp_matrix(size):
     while check:
         c = matrix_c(size)
         c_ = np.linalg.inv(c)
-        cac_ = np.matmul(c, a, c_)
+        cac_ = np.matmul(np.matmul(c, a), c_)
         if tp_test(cac_) == -1:
             n = n + 1
             print(n)
@@ -119,17 +121,21 @@ def tnn_test(matrix):
 
 
 # TNN generator
-def tnn_matrix(size):
+def tnn_matrix(eigenvalue_matrix, size=1):
     n = 0
-    a = matrix_a(size)
+    a = eigenvalue_matrix
     check = True
     while check:
         c = matrix_c(size)
         c_ = np.linalg.inv(c)
-        cac_ = np.matmul(c, a, c_)
+        cac_ = c.dot(a).dot(c_)
         if tnn_test(cac_) == -1:
+            # Optional information on matrices
             n = n + 1
             print(n)
+            # print(a)
+            # print(c)
+            # print(c_)
             return cac_
         else:
             # This way tells how many candidates were checked
@@ -147,7 +153,30 @@ def ldu(matrix):
     return x, d, u
 
 
+# d(A) generator
+def d_a(size, number=1):
+    d_a_list = list()
+    lambda_matrix = matrix_a(size)
+    print(lambda_matrix)
+    for i in range(number):
+        check1 = True
+        while check1:
+            # Generating TNN matrix to test
+            a = tnn_matrix(lambda_matrix, size)
+            b = ldu(a)
+            for j in range(size - 1):
+                print(j)
+                if b[1][j][j] >= b[1][j + 1][j + 1]:
+                    # Test failed, exiting loop
+                    break
+                if j == size - 2:
+                    print(b[1])
+                    d = [log10(x) for x in np.diag(b[1])]
+                    d_a_list.append(d)
+                    # Success! Adding to list.
+                    check1 = False
+    return d_a_list
+
+
 k = 3
-A = tnn_matrix(k)
-print(A)
-print(ldu(A))
+print(d_a(k))

@@ -3,16 +3,18 @@ from math import comb
 import scipy.linalg as la
 import random
 from math import log10
+from matplotlib import pyplot
+from mpl_toolkits.mplot3d import Axes3D
 
 
 # Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
-def sample_floats(low, high, k=1):
+def sample_floats(low, high, j=1):
     """ Return a k-length list of unique random floats
         in the range of low <= x <= high
     """
     result = []
     seen = set()
-    for i in range(k):
+    for i in range(j):
         x = random.uniform(low, high)
         while x in seen:
             x = random.uniform(low, high)
@@ -25,7 +27,7 @@ def sample_floats(low, high, k=1):
 def matrix_a(size):
     a = np.zeros((size, size))
     # It seems that keeping the upper limit small helps the computer run through computations faster
-    b = sample_floats(0, 10, size)
+    b = sample_floats(1, 5, size)
     for i in range(size):
         a[i][i] = b[i]
     return a
@@ -66,9 +68,9 @@ def tp_test(matrix):
 
 
 # TP generator - unfortunately the way we're generating matrices, I don't think this will ever find a TP matrix
-def tp_matrix(size):
+def tp(eigenvalue_matrix, size=1):
     n = 0
-    a = matrix_a(size)
+    a = eigenvalue_matrix
     check = True
     while check:
         c = matrix_c(size)
@@ -121,7 +123,7 @@ def tnn_test(matrix):
 
 
 # TNN generator
-def tnn_matrix(eigenvalue_matrix, size=1):
+def tnn(eigenvalue_matrix, size=1):
     n = 0
     a = eigenvalue_matrix
     check = True
@@ -153,8 +155,8 @@ def ldu(matrix):
     return x, d, u
 
 
-# d(A) generator
-def d_a(size, number=1):
+# d(A) generator that makes sure diagonal matrix has increasing entries - kinda slow
+def d_a(tp_or_tnn, size=1, number=1):
     d_a_list = list()
     lambda_matrix = matrix_a(size)
     print(lambda_matrix)
@@ -162,7 +164,7 @@ def d_a(size, number=1):
         check1 = True
         while check1:
             # Generating TNN matrix to test
-            a = tnn_matrix(lambda_matrix, size)
+            a = tp_or_tnn(lambda_matrix, size)
             b = ldu(a)
             for j in range(size - 1):
                 print(j)
@@ -178,5 +180,38 @@ def d_a(size, number=1):
     return d_a_list
 
 
+# 3D Scatter Plot
+fig_1 = pyplot.figure()
+ax_1 = Axes3D(fig_1)
+
+# Axis Labels
+ax_1.set_xlabel('X-axis')
+ax_1.set_ylabel('Y-axis')
+ax_1.set_zlabel('Z-axis')
+
+
+# d(A) generator in which diagonal matrix doesn't need to have increasing entries - faster
+def d_a_fast(tp_or_tnn, size=1, number=1):
+    x = list()
+    y = list()
+    z = list()
+    lambda_matrix = matrix_a(size)
+    print(lambda_matrix)
+    for i in range(number):
+        a = tp_or_tnn(lambda_matrix, size)
+        b = ldu(a)
+        if all(g >= 0 for g in np.diag(b[1])):
+            print(np.diag(b[1]))
+            d = [log10(x) for x in np.diag(b[1])]
+            d.sort()
+            x.append(d[0])
+            y.append(d[1])
+            z.append(d[2])
+    return [x, y, z]
+
+
+# Make Plot (set k to desired distance)
 k = 3
-print(d_a(k))
+p = d_a_fast(tp, k, 25)
+ax_1.scatter(p[0], p[1], p[2])
+pyplot.show()

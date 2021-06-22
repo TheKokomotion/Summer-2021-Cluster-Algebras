@@ -1,12 +1,29 @@
 import numpy as np
 from math import comb
 import scipy.linalg as la
+import random
+
+
+# Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
+def sample_floats(low, high, k=1):
+    """ Return a k-length list of unique random floats
+        in the range of low <= x <= high
+    """
+    result = []
+    seen = set()
+    for i in range(k):
+        x = random.uniform(low, high)
+        while x in seen:
+            x = random.uniform(low, high)
+        seen.add(x)
+        result.append(x)
+    return result
 
 
 # Random diagonal matrix with distinct eigenvalues
 def matrix_a(size):
-    a = np.zeros((size, size), dtype=int)
-    b = np.random.permutation(100)[:size]
+    a = np.zeros((size, size))
+    b = sample_floats(0, 101, size)
     for i in range(size):
         a[i][i] = b[i]
     return a
@@ -16,7 +33,7 @@ def matrix_a(size):
 def matrix_c(size):
     check = True
     while check:
-        c = np.random.randint(-1, 2, (size, size))
+        c = np.random.uniform(-1, 2, (size, size))
         if np.linalg.det(c) != 0:
             return c
 
@@ -49,9 +66,9 @@ def tp_test(matrix):
 # TP generator - unfortunately the way we're generating matrices, I don't think this will ever find a TP matrix
 def tp_matrix(size):
     n = 0
+    a = matrix_a(size)
     check = True
     while check:
-        a = matrix_a(size)
         c = matrix_c(size)
         c_ = np.linalg.inv(c)
         cac_ = np.matmul(c, a, c_)
@@ -63,7 +80,7 @@ def tp_matrix(size):
             # This way tells how many candidates were checked
             n = n + 1
             # This way gives some info on how "close" each candidate was to being TNN
-            print(tp_test(cac_))
+            # print(tp_test(cac_))
 
 
 # TNN test
@@ -104,9 +121,9 @@ def tnn_test(matrix):
 # TNN generator
 def tnn_matrix(size):
     n = 0
+    a = matrix_a(size)
     check = True
     while check:
-        a = matrix_a(size)
         c = matrix_c(size)
         c_ = np.linalg.inv(c)
         cac_ = np.matmul(c, a, c_)
@@ -133,5 +150,4 @@ def ldu(matrix):
 k = 3
 A = tnn_matrix(k)
 print(A)
-print(la.lu(A))
 print(ldu(A))

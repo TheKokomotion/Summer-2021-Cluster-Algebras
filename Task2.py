@@ -27,7 +27,7 @@ def sample_floats(low, high, j=1):
 def matrix_a(size):
     a = np.zeros((size, size))
     # It seems that keeping the upper limit small helps the computer run through computations faster
-    b = sample_floats(1, 5, size)
+    b = sample_floats(1, 7, size)
     for i in range(size):
         a[i][i] = b[i]
     return a
@@ -212,6 +212,6 @@ def d_a_fast(tp_or_tnn, size=1, number=1):
 
 # Make Plot (set k to desired distance)
 k = 3
-p = d_a_fast(tp, k, 25)
+p = d_a_fast(tp, k, 50)
 ax_1.scatter(p[0], p[1], p[2])
 pyplot.show()

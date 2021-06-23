@@ -3,8 +3,7 @@ from math import comb
 import scipy.linalg as la
 import random
 from math import log10
-from matplotlib import pyplot
-from mpl_toolkits.mplot3d import Axes3D
+from D_A_Storage import A_2
 
 
 # Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
@@ -27,7 +26,7 @@ def sample_floats(low, high, j=1):
 def matrix_a(size):
     a = np.zeros((size, size))
     # It seems that keeping the upper limit small helps the computer run through computations faster
-    b = sample_floats(1, 7, size)
+    b = sample_floats(1, 5, size)
     for i in range(size):
         a[i][i] = b[i]
     return a
@@ -180,38 +179,44 @@ def d_a(tp_or_tnn, size=1, number=1):
     return d_a_list
 
 
-# 3D Scatter Plot
-fig_1 = pyplot.figure()
-ax_1 = Axes3D(fig_1)
-
-# Axis Labels
-ax_1.set_xlabel('X-axis')
-ax_1.set_ylabel('Y-axis')
-ax_1.set_zlabel('Z-axis')
-
-
 # d(A) generator in which diagonal matrix doesn't need to have increasing entries - faster
-def d_a_fast(tp_or_tnn, size=1, number=1):
+def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
     x = list()
     y = list()
     z = list()
-    lambda_matrix = matrix_a(size)
+    if np.all(lambda_matrix == 0):
+        lambda_matrix = matrix_a(size)
     print(lambda_matrix)
     for i in range(number):
-        a = tp_or_tnn(lambda_matrix, size)
-        b = ldu(a)
-        if all(g >= 0 for g in np.diag(b[1])):
-            print(np.diag(b[1]))
-            d = [log10(x) for x in np.diag(b[1])]
-            d.sort()
-            x.append(d[0])
-            y.append(d[1])
-            z.append(d[2])
-    return [x, y, z]
+        print(i + 1)
+        check = True
+        while check:
+            a = tp_or_tnn(lambda_matrix, size)
+            b = ldu(a)
+            if all(g >= 0 for g in np.diag(b[1])):
+                print(np.diag(b[1]))
+                d = [log10(x) for x in np.diag(b[1])]
+                d.sort()
+                x.append(d[0])
+                y.append(d[1])
+                z.append(d[2])
+                check = False
+    return [x, y, z, lambda_matrix]
 
 
-# Make Plot (set k to desired distance)
+# Store D(A)
+Matrix_Lambda = A_2
 k = 3
-p = d_a_fast(tp, k, 50)
-ax_1.scatter(p[0], p[1], p[2])
-pyplot.show()
+Number_Of_Vectors = 1000
+with open("D_A_Storage.py", "a") as out:
+    dlist = d_a_fast(tp, Matrix_Lambda, k, Number_Of_Vectors)
+    out.write('\n')
+    out.write('# Matrix Lambda:' + '\n')
+    out.write(f'# A = {dlist[3]}' + '\n')
+    out.write(f'# Number of Vectors: {Number_Of_Vectors}' + '\n')
+    out.write('# x-values:' + '\n')
+    out.write(f'x = {dlist[0]}' + '\n')
+    out.write('# y-values:' + '\n')
+    out.write(f'y = {dlist[1]}' + '\n')
+    out.write('# z-values:' + '\n')
+    out.write(f'z = {dlist[2]}' + '\n')

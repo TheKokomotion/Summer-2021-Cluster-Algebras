@@ -3,7 +3,7 @@ from math import comb
 import scipy.linalg as la
 import random
 from math import log10
-from D_A_Compiling import A_2
+from D_A_Storage import A_12
 
 
 # Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
@@ -205,10 +205,10 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
 
 
 # Store D(A)
-Matrix_Lambda = A_2
+Matrix_Lambda = A_12
 k = 3
-Number_Of_Vectors = 1000
-index = 11
+Number_Of_Vectors = 2000
+index = 13
 bottom = -100
 top = 100
 with open("D_A_Storage.py", "a") as out:

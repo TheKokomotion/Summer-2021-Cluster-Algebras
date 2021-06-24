@@ -36,7 +36,7 @@ def matrix_a(size):
 def matrix_c(size):
     check = True
     while check:
-        c = np.random.uniform(-1, 2, (size, size))
+        c = np.random.uniform(-100, 101, (size, size))
         if np.linalg.det(c) != 0:
             return c
 
@@ -127,7 +127,7 @@ def tnn_test(matrix):
 
 # TNN generator
 def tnn(eigenvalue_matrix, size=1):
-    # n = 0
+    n = 0
     a = eigenvalue_matrix
     check = True
     while check:
@@ -135,16 +135,12 @@ def tnn(eigenvalue_matrix, size=1):
         c_ = np.linalg.inv(c)
         cac_ = c.dot(a).dot(c_)
         if tnn_test(cac_) == -1:
-            # Optional information on matrices
-            # n = n + 1
-            # print(n)
-            # print(a)
-            # print(c)
-            # print(c_)
+            n = n + 1
+            print(f'Checked {n} matrices')
             return cac_
-        # else:
+        else:
             # This way tells how many candidates were checked
-            # n = n + 1
+            n = n + 1
             # This way gives some info on how "close" each candidate was to being TNN
             # print(tnn_test(cac_))
 
@@ -211,16 +207,20 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
 # Store D(A)
 Matrix_Lambda = A_2
 k = 3
-Number_Of_Vectors = 1500
+Number_Of_Vectors = 1000
+index = 11
+bottom = -100
+top = 100
 with open("D_A_Storage.py", "a") as out:
     dlist = d_a_fast(tp, Matrix_Lambda, k, Number_Of_Vectors)
     out.write('\n')
     out.write('# Matrix Lambda:' + '\n')
     out.write(f'# A = {dlist[3]}' + '\n')
     out.write(f'# Number of Vectors: {Number_Of_Vectors}' + '\n')
+    out.write(f'# C values in [{bottom}, {top}]' + '\n')
     out.write('# x-values:' + '\n')
-    out.write(f'x = {dlist[0]}' + '\n')
+    out.write(f'x_{index} = {dlist[0]}' + '\n')
     out.write('# y-values:' + '\n')
-    out.write(f'y = {dlist[1]}' + '\n')
+    out.write(f'y_{index} = {dlist[1]}' + '\n')
     out.write('# z-values:' + '\n')
-    out.write(f'z = {dlist[2]}' + '\n')
+    out.write(f'z_{index} = {dlist[2]}' + '\n')

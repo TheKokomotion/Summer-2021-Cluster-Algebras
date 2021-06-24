@@ -21,10 +21,10 @@ ax_1.set_ylabel('Y-axis')
 ax_1.set_zlabel('Z-axis')
 
 # Scatter Plot (without permutations)
-ax_1.scatter(x, y, z, color='Blue')
+# ax_1.scatter(x, y, z, color='Red')
 
 # Scatter Plot (with permutations)
-# ax_1.scatter(x_new, y_new, z_new, color='Red')
+ax_1.scatter(x_new, y_new, z_new, color='Red')
 
 # Plane that points lie in
 # x = np.linspace(.1, .4, 5)

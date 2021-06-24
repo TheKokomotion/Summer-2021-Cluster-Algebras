@@ -3,7 +3,7 @@ from math import comb
 import scipy.linalg as la
 import random
 from math import log10
-from D_A_Storage import A_2
+from D_A_Compiling import A_2
 
 
 # Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
@@ -63,6 +63,8 @@ def tp_test(matrix):
         return -1
     else:
         return c
+
+
 # Note: returns -1 if TP
 
 
@@ -77,7 +79,7 @@ def tp(eigenvalue_matrix, size=1):
         cac_ = np.matmul(np.matmul(c, a), c_)
         if tp_test(cac_) == -1:
             n = n + 1
-            print(n)
+            print(f'Checked {n} matrices')
             return cac_
         else:
             # This way tells how many candidates were checked
@@ -118,12 +120,14 @@ def tnn_test(matrix):
         return -1
     else:
         return c
+
+
 # Note: returns -1 if TNN. Only will work for 3 x 3 matrices as of now.
 
 
 # TNN generator
 def tnn(eigenvalue_matrix, size=1):
-    n = 0
+    # n = 0
     a = eigenvalue_matrix
     check = True
     while check:
@@ -132,23 +136,24 @@ def tnn(eigenvalue_matrix, size=1):
         cac_ = c.dot(a).dot(c_)
         if tnn_test(cac_) == -1:
             # Optional information on matrices
-            n = n + 1
-            print(n)
+            # n = n + 1
+            # print(n)
             # print(a)
             # print(c)
             # print(c_)
             return cac_
-        else:
+        # else:
             # This way tells how many candidates were checked
-            n = n + 1
+            # n = n + 1
             # This way gives some info on how "close" each candidate was to being TNN
             # print(tnn_test(cac_))
 
 
 # LDU
 def ldu(matrix):
-    x = la.lu(matrix)[1]
-    u = la.lu(matrix)[2]
+    lu = la.lu(matrix)
+    x = lu[1]
+    u = lu[2]
     d = np.diag(np.diag(u))
     u /= np.diag(u)[:, None]
     return x, d, u
@@ -188,13 +193,12 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
         lambda_matrix = matrix_a(size)
     print(lambda_matrix)
     for i in range(number):
-        print(i + 1)
+        print(f'Entry {i + 1}')
         check = True
         while check:
             a = tp_or_tnn(lambda_matrix, size)
             b = ldu(a)
             if all(g >= 0 for g in np.diag(b[1])):
-                print(np.diag(b[1]))
                 d = [log10(x) for x in np.diag(b[1])]
                 d.sort()
                 x.append(d[0])
@@ -207,7 +211,7 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
 # Store D(A)
 Matrix_Lambda = A_2
 k = 3
-Number_Of_Vectors = 1000
+Number_Of_Vectors = 1500
 with open("D_A_Storage.py", "a") as out:
     dlist = d_a_fast(tp, Matrix_Lambda, k, Number_Of_Vectors)
     out.write('\n')

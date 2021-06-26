@@ -3,7 +3,6 @@ from math import comb
 import scipy.linalg as la
 import random
 from math import log10
-from D_A_Storage import A_12
 
 
 # Random, distinct real numbers generator (thanks to Raymond Hettinger on stackoverflow)
@@ -26,7 +25,7 @@ def sample_floats(low, high, j=1):
 def matrix_a(size):
     a = np.zeros((size, size))
     # It seems that keeping the upper limit small helps the computer run through computations faster
-    b = sample_floats(1, 5, size)
+    b = sample_floats(5, 15, size)
     for i in range(size):
         a[i][i] = b[i]
     return a
@@ -205,17 +204,17 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
 
 
 # Store D(A)
-Matrix_Lambda = A_12
+Matrix_Lambda = np.array([[2.2, 0, 0], [0, .5, 0], [0, 0, 1.1]])
 k = 3
-Number_Of_Vectors = 2000
-index = 13
+Number_Of_Vectors = 1000
+index = 'hexagon_1'
 bottom = -100
 top = 100
+dlist = d_a_fast(tp, Matrix_Lambda, k, Number_Of_Vectors)
 with open("D_A_Storage.py", "a") as out:
-    dlist = d_a_fast(tp, Matrix_Lambda, k, Number_Of_Vectors)
     out.write('\n')
     out.write('# Matrix Lambda:' + '\n')
-    out.write(f'# A = {dlist[3]}' + '\n')
+    out.write(f'# A = np.array({dlist[3]})' + '\n')
     out.write(f'# Number of Vectors: {Number_Of_Vectors}' + '\n')
     out.write(f'# C values in [{bottom}, {top}]' + '\n')
     out.write('# x-values:' + '\n')

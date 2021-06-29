@@ -67,7 +67,7 @@ def tp_test(matrix):
 # Note: returns -1 if TP
 
 
-# TP generator - unfortunately the way we're generating matrices, I don't think this will ever find a TP matrix
+# TP generator
 def tp(eigenvalue_matrix, size=1):
     n = 0
     a = eigenvalue_matrix
@@ -144,6 +144,52 @@ def tnn(eigenvalue_matrix, size=1):
             # print(tnn_test(cac_))
 
 
+# TP test
+def close_to_0_test(matrix, i=0, j=0):
+    c = 0
+    for i_1 in range(len(matrix)):
+        for j_1 in range(len(matrix)):
+            m = min(i_1, j_1)
+            rows = list()
+            columns = list()
+            for n in range(m + 1):
+                rows.insert(0, (i_1 - n))
+                columns.insert(0, (j_1 - n))
+            a = matrix[np.ix_(rows, columns)]
+            if (i_1 == i) and (j_1 == j):
+                if np.linalg.det(a) > 0:
+                    if np.linalg.det(a) <= .0001:
+                        c = c + 1
+            else:
+                if np.linalg.det(a) > 0:
+                    c = c + 1
+    if c == len(matrix) ** 2:
+        return -1
+
+
+# Note: returns -1 if desired minor is close to 0
+
+
+# TP generator
+def close_to_0(eigenvalue_matrix, size=1, i=1, j=2):
+    n = 0
+    a = eigenvalue_matrix
+    check = True
+    while check:
+        c = matrix_c(size)
+        c_ = np.linalg.inv(c)
+        cac_ = np.matmul(np.matmul(c, a), c_)
+        if close_to_0_test(cac_, i, j) == -1:
+            n = n + 1
+            print(f'Checked {n} matrices')
+            return cac_
+        else:
+            # This way tells how many candidates were checked
+            n = n + 1
+            # This way gives some info on how "close" each candidate was to being TNN
+            # print(tp_test(cac_))
+
+
 # LDU
 def ldu(matrix):
     lu = la.lu(matrix)
@@ -191,7 +237,12 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
         print(f'Entry {i + 1}')
         check = True
         while check:
-            a = tp_or_tnn(lambda_matrix, size)
+            if tp_or_tnn == 'no_restriction':
+                c = matrix_c(size)
+                c_ = np.linalg.inv(c)
+                a = c.dot(lambda_matrix).dot(c_)
+            else:
+                a = tp_or_tnn(lambda_matrix, size)
             b = ldu(a)
             if all(g >= 0 for g in np.diag(b[1])):
                 d = [log10(x) for x in np.diag(b[1])]
@@ -204,13 +255,13 @@ def d_a_fast(tp_or_tnn, lambda_matrix=np.array(0), size=1, number=1):
 
 
 # Store D(A)
-Matrix_Lambda = np.array([[2.2, 0, 0], [0, .5, 0], [0, 0, 1.1]])
+Matrix_Lambda = np.array([[1.2, 0, 0], [0, .5, 0], [0, 0, 1.1]])
 k = 3
-Number_Of_Vectors = 1000
-index = 'hexagon_1'
+Number_Of_Vectors = 3
+index = 'test_1_det'
 bottom = -100
 top = 100
-dlist = d_a_fast(tp, Matrix_Lambda, k, Number_Of_Vectors)
+dlist = d_a_fast(close_to_0, Matrix_Lambda, k, Number_Of_Vectors)
 with open("D_A_Storage.py", "a") as out:
     out.write('\n')
     out.write('# Matrix Lambda:' + '\n')

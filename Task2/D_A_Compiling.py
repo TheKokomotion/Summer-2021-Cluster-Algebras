@@ -22,7 +22,9 @@ from D_A_Storage import x_tri2_1
 from D_A_Storage import x_tri2_2
 from D_A_Storage import x_tri2_3
 from D_A_Storage import x_test_1
+from D_A_Storage import x_test_2
 from D_A_Storage import x_hexagon_1
+from D_A_Storage import x_test_1_det
 
 from D_A_Storage import y_2
 from D_A_Storage import y_3
@@ -44,7 +46,9 @@ from D_A_Storage import y_tri2_1
 from D_A_Storage import y_tri2_2
 from D_A_Storage import y_tri2_3
 from D_A_Storage import y_test_1
+from D_A_Storage import y_test_2
 from D_A_Storage import y_hexagon_1
+from D_A_Storage import y_test_1_det
 
 from D_A_Storage import z_2
 from D_A_Storage import z_3
@@ -66,7 +70,9 @@ from D_A_Storage import z_tri2_1
 from D_A_Storage import z_tri2_2
 from D_A_Storage import z_tri2_3
 from D_A_Storage import z_test_1
+from D_A_Storage import z_test_2
 from D_A_Storage import z_hexagon_1
+from D_A_Storage import z_test_1_det
 
 
 # Combine coordinate data into big lists:
@@ -79,23 +85,22 @@ y_eigenvalues_triangle = [log10(1.2769152), log10(3.51255544), log10(4.30788144)
 z_eigenvalues_triangle = [log10(3.51255544), log10(1.2769152), log10(3.51255544), log10(4.30788144),
                            log10(1.2769152), log10(4.30788144)]
 # x-data:
-x = x_2 + x_3 + x_4 + x_5 + x_6 + x_7 + x_8 + x_9 + x_10 + x_11
+x_triangle = x_2 + x_3 + x_4 + x_5 + x_6 + x_7 + x_8 + x_9 + x_10 + x_11
 # y-data:
-y = y_2 + y_3 + y_4 + y_5 + y_6 + y_7 + y_8 + y_9 + y_10 + y_11
+y_triangle = y_2 + y_3 + y_4 + y_5 + y_6 + y_7 + y_8 + y_9 + y_10 + y_11
 # z-data:
-z = z_2 + z_3 + z_4 + z_5 + z_6 + z_7 + z_8 + z_9 + z_10 + z_11
+z_triangle = z_2 + z_3 + z_4 + z_5 + z_6 + z_7 + z_8 + z_9 + z_10 + z_11
 
 # Permute order of the vectors
 x_triangle_permuted = list()
 y_triangle_permuted = list()
 z_triangle_permuted = list()
-l_1 = list(permutations((x, y, z)))
-for i_1 in range(len(x)):
+l_1 = list(permutations((x_triangle, y_triangle, z_triangle)))
+for i_1 in range(len(x_triangle)):
     for i_2 in range(len(l_1)):
         x_triangle_permuted.append(l_1[i_2][0][i_1])
         y_triangle_permuted.append(l_1[i_2][1][i_1])
         z_triangle_permuted.append(l_1[i_2][2][i_1])
-
 
 # eigenvalues:
 e_shield = [2.55061337, 4.77928811, 1.50907569]
@@ -185,7 +190,7 @@ for i_1 in range(len(x_tri2)):
         z_tri2_permuted.append(l_tri2[i_2][2][i_1])
 
 # eigenvalue test:
-e_test = [1.2, .5, 1.1]
+e_test = [1.2, 0.5, 1.1]
 x_eigenvalues_test = list()
 y_eigenvalues_test = list()
 z_eigenvalues_test = list()
@@ -196,9 +201,9 @@ for i_1 in range(0, 3):
         y_eigenvalues_test.append(log10(l_e_test[i_2][1]))
         z_eigenvalues_test.append(log10(l_e_test[i_2][2]))
 
-x_test = x_test_1
-y_test = y_test_1
-z_test = z_test_1
+x_test = x_test_1 + x_test_2
+y_test = y_test_1 + y_test_2
+z_test = z_test_1 + z_test_2
 
 # Permute order of the vectors
 x_test_permuted = list()
@@ -211,8 +216,19 @@ for i_1 in range(len(x_test)):
         y_test_permuted.append(l_test[i_2][1][i_1])
         z_test_permuted.append(l_test[i_2][2][i_1])
 
+# One of 9 minors close to 0 Stuff
+x_test_0_det_permuted = list()
+y_test_0_det_permuted = list()
+z_test_0_det_permuted = list()
+l_test_0_det = list(permutations((x_test_1_det, y_test_1_det, z_test_1_det)))
+for i_1 in range(len(x_test_1_det)):
+    for i_2 in range(len(l_test_0_det)):
+        x_test_0_det_permuted.append(l_test_0_det[i_2][0][i_1])
+        y_test_0_det_permuted.append(l_test_0_det[i_2][1][i_1])
+        z_test_0_det_permuted.append(l_test_0_det[i_2][2][i_1])
+
 # Eigenvalues:
-e_hexagon = [2.2, .5, 1.1]
+e_hexagon = [2.2, 0.5, 1.1]
 x_eigenvalues_hexagon = list()
 y_eigenvalues_hexagon = list()
 z_eigenvalues_hexagon = list()
